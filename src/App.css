@@ -1,0 +1,97 @@
+header {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  height: 10lvh;
+  min-height: 50px;
+  padding: 8px 24px;
+  align-items: center;
+  background: linear-gradient(90deg, var(--accent-bg) 5%, var(--bg) 100%);
+}
+
+#icon {
+  height: 70%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  gap: 8px;
+}
+
+.game-settings {
+  display: grid;
+  grid-template: auto/ 1fr 1fr 1fr;
+  gap: 16px;
+  height: 25px;
+  padding: 8px 0px;
+}
+
+.game-settings select {
+  width: 100%;
+  border-radius: 5px;
+  text-indent: 5px;
+  background-color: var(--social-bg);
+  border: 1px solid var(--border);
+}
+
+.game-settings option {
+  background-color: var(--bg);
+}
+
+.game-settings button {
+  background-color: var(--accent-bg);
+  border-radius: 5px;
+  border: 1px solid var(--border);
+}
+
+.game-window {
+  margin-top: 16px;
+}
+
+.stats {
+  display: grid;
+  grid-template: auto / 1fr 1fr;
+  padding: 0px 16px;
+  margin-bottom: 16px;
+}
+
+#rolls {
+  font-family: var(--mono);
+  font-size: 2rem;
+  text-align: left;
+}
+
+#time {
+  font-family: var(--mono);
+  font-size: 2rem;
+  text-align: right;
+}
+
+#roll-btn {
+  background-color: var(--accent-bg);
+  height: 50px;
+  width: 150px;
+  font-size: 1.2rem;
+  font-family: var(--mono);
+  border: var(--border);
+  border-radius: 5px;
+  border-style: solid;
+}
+.game-board {
+  display: grid;
+  margin-top: 24px;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: repeat(5, 100px);
+  gap: 24px;
+}
+
+.dice {
+  height: 100px;
+  background-color: var(--second-accent-bg);
+  border-color: var(--accent-border);
+  font-family: var(--mono);
+  font-size: 1.5rem;
+}
