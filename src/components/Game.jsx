@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Confetti from "react-confetti";
 import GameSettings from "./GameSettings.jsx";
 import GameBoard from "./GameBoard.jsx";
@@ -6,14 +6,32 @@ import settingsData from "../settings.js";
 
 function Game() {
   // Creating State
-  const [settings, setSettings] = useState(settingsData);
-  const [started, setStarted] = useState(false);
+  const [settings, setSettings] = useState(settingsData); // Manage the Default State and settings
+  const [started, setStarted] = useState(0); // 0 -> Initial Stage (Called By "reset") , 1 - Running Stage (Called By "start"), 2 - Ended Stage (Called By "End")
   const [isWon, setIsWon] = useState(false);
+  const [rolls, setRolls] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
+  // Window Size For Confetti
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
 
+  const startTimeRef = useRef(0);
+
+  // Use Effect Functions
+
+  // Create the Timer
+  useEffect(() => {
+    if (started !== 1) return;
+
+    const intervalId = setInterval(() => {
+      setElapsed(performance.now() - startTimeRef.current);
+    }, 10);
+    return () => clearInterval(intervalId);
+  }, [started]);
+
+  // Update the Window Size State for Confetti
   useEffect(() => {
     function getWidowSize() {
       setWindowSize({
@@ -26,6 +44,8 @@ function Game() {
   }, []);
 
   // Updating State
+
+  // Change the Settings
   function newSettings(e) {
     const { value, name } = e.currentTarget;
 
@@ -40,7 +60,6 @@ function Game() {
               };
             })
           : prevSettings.diceArray;
-      console.log(newArray);
       return {
         ...prevSettings,
         [name]: Number(value),
@@ -49,13 +68,32 @@ function Game() {
     });
   }
 
-  function startAndEndGame(won = false) {
-    setStarted((prev) => !prev);
-    if (won) {
-      setIsWon(false);
-    }
+  // Function to reset the Game
+  function resetGame() {
+    startTimeRef.current = 0;
+    setRolls(0);
+    setSettings(settingsData);
+    setElapsed(0);
+    startTimeRef.current = 0;
+    setIsWon(false);
   }
 
+  // Toggle Function to Start and End the Game
+  function startEndAndResetGame(action) {
+    if (action === "start") {
+      startTimeRef.current = performance.now();
+      setStarted(1);
+      return;
+    }
+    if (action === "reset") {
+      resetGame();
+      setStarted(0);
+      return;
+    }
+
+    setStarted(2);
+  }
+  // Function to update the Dice Array
   function playGame(id, activity, value) {
     setSettings((prevSettings) => {
       const newArray = prevSettings.diceArray.map((dice) =>
@@ -68,15 +106,10 @@ function Game() {
     });
   }
 
+  // Function to Toggle Win
   function toggleWin(boolean) {
     setIsWon(boolean);
-    startAndEndGame();
-  }
-
-  function resetGame(setRolls, startTimeRef, setElapsed) {
-    setRolls(0);
-    setSettings(settingsData);
-    setElapsed(0);
+    startEndAndResetGame("end");
   }
 
   return (
@@ -87,7 +120,7 @@ function Game() {
       <GameSettings
         settings={settings}
         newSettings={newSettings}
-        startGame={startAndEndGame}
+        startGame={startEndAndResetGame}
         isStarted={started}
       />
 
@@ -96,7 +129,9 @@ function Game() {
         isStarted={started}
         playGame={playGame}
         setIsWon={toggleWin}
-        resetGame={resetGame}
+        rolls={rolls}
+        time={elapsed}
+        setRolls={setRolls}
       />
     </main>
   );

@@ -8,9 +8,6 @@ function Timer({ time }) {
 
   const format = (value) => String(value).padStart(2, "0");
 
-  console.log(`Time: ${format(hours)}:${format(minutes)}:${format(seconds)}.
-      ${format(hundredths)}`);
-
   return (
     <p id="time">
       Time: {format(hours)}:{format(minutes)}:{format(seconds)}.

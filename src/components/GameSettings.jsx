@@ -6,7 +6,11 @@ function GameSettings({ settings, newSettings, startGame, isStarted }) {
         id="diceType"
         onChange={newSettings}
         value={settings.diceType}
-        style={isStarted ? { pointerEvents: "none", opacity: 0.4 } : {}}
+        style={
+          isStarted === 1 || isStarted === 2
+            ? { pointerEvents: "none", opacity: 0.4 }
+            : {}
+        }
       >
         <option value="6">d6</option>
         <option value="8">d8</option>
@@ -19,17 +23,27 @@ function GameSettings({ settings, newSettings, startGame, isStarted }) {
         id="diceAmount"
         onChange={newSettings}
         value={settings.diceAmount}
-        style={isStarted ? { pointerEvents: "none", opacity: 0.4 } : {}}
+        style={
+          isStarted === 1 || isStarted === 2
+            ? { pointerEvents: "none", opacity: 0.4 }
+            : {}
+        }
       >
         <option value="10">10</option>
         <option value="20">20</option>
         <option value="100">100</option>
       </select>
       <button
-        onClick={startGame}
-        style={isStarted ? { backgroundColor: "rgba(255 , 0 , 0 , 0.7)" } : {}}
+        onClick={() =>
+          startGame(
+            isStarted === 1 ? "end " : isStarted === 0 ? "start" : "reset",
+          )
+        }
+        style={
+          isStarted !== 0 ? { backgroundColor: "rgba(255 , 0 , 0 , 0.7)" } : {}
+        }
       >
-        {isStarted ? "End " : "Start "} Game
+        {isStarted === 1 ? "End " : isStarted === 0 ? "Start" : "Reset"} Game
       </button>
     </div>
   );
