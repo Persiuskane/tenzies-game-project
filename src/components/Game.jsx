@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 import GameSettings from "./GameSettings.jsx";
 import GameBoard from "./GameBoard.jsx";
 import settingsData from "../settings.js";
@@ -6,8 +7,23 @@ import settingsData from "../settings.js";
 function Game() {
   // Creating State
   const [settings, setSettings] = useState(settingsData);
-
   const [started, setStarted] = useState(false);
+  const [isWon, setIsWon] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    function getWidowSize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    window.addEventListener("resize", getWidowSize);
+    return () => removeEventListener("resize", getWidowSize);
+  }, []);
 
   // Updating State
   function newSettings(e) {
@@ -19,7 +35,6 @@ function Game() {
           ? Array.from({ length: Number(value) }, (element, index) => {
               return {
                 id: index + 1,
-                number: 1,
                 isFrozen: false,
                 value: 1,
               };
@@ -34,8 +49,11 @@ function Game() {
     });
   }
 
-  function startAndEndGame() {
+  function startAndEndGame(won = false) {
     setStarted((prev) => !prev);
+    if (won) {
+      setIsWon(false);
+    }
   }
 
   function playGame(id, activity, value) {
@@ -50,8 +68,22 @@ function Game() {
     });
   }
 
+  function toggleWin(boolean) {
+    setIsWon(boolean);
+    startAndEndGame();
+  }
+
+  function resetGame(setRolls, startTimeRef, setElapsed) {
+    setRolls(0);
+    setSettings(settingsData);
+    setElapsed(0);
+  }
+
   return (
     <main>
+      {isWon ? (
+        <Confetti width={windowSize.width} height={windowSize.height} />
+      ) : undefined}
       <GameSettings
         settings={settings}
         newSettings={newSettings}
@@ -59,7 +91,13 @@ function Game() {
         isStarted={started}
       />
 
-      <GameBoard settings={settings} isStarted={started} playGame={playGame} />
+      <GameBoard
+        settings={settings}
+        isStarted={started}
+        playGame={playGame}
+        setIsWon={toggleWin}
+        resetGame={resetGame}
+      />
     </main>
   );
 }
