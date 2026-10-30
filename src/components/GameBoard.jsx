@@ -2,21 +2,7 @@ import { useEffect } from "react";
 import Dice from "./Dice.jsx";
 import Timer from "./Timer.jsx";
 
-function GameBoard({
-  settings,
-  isStarted,
-  playGame,
-  setIsWon,
-  rolls,
-  time,
-  setRolls,
-}) {
-  // Checking if the Game has Won every time a die is Frozen
-  const checkFrozen = settings.diceArray.map((dice) => dice.isFrozen); // Getting a array to compare in useEffect
-  useEffect(() => {
-    checkWinCon();
-  }, [JSON.stringify(checkFrozen)]);
-
+function GameBoard({ settings, isStarted, playGame, rolls, time, setRolls }) {
   //Update Rols
   function updateRolls() {
     setRolls((prevRolls) => prevRolls + 1);
@@ -38,24 +24,6 @@ function GameBoard({
     }
     if (settings.diceType === 100) {
       return "polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%)";
-    }
-  }
-
-  // Function to check If the Game Has Won
-  function checkWinCon() {
-    let diceValue = 0; // Variable to Compare
-    const isWon = settings.diceArray.every((dice) => {
-      if (dice.isFrozen === false) return false;
-
-      // Changing the Dice Value if its still zero
-      if (diceValue === 0) {
-        diceValue = dice.value;
-      }
-
-      return dice.value === diceValue; // Comparing the Dice Values
-    });
-    if (isWon) {
-      setIsWon(true);
     }
   }
 

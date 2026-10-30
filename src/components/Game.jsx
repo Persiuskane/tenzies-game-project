@@ -8,7 +8,6 @@ function Game() {
   // Creating State
   const [settings, setSettings] = useState(settingsData); // Manage the Default State and settings
   const [started, setStarted] = useState(0); // 0 -> Initial Stage (Called By "reset") , 1 - Running Stage (Called By "start"), 2 - Ended Stage (Called By "End")
-  const [isWon, setIsWon] = useState(false);
   const [rolls, setRolls] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   // Window Size For Confetti
@@ -18,6 +17,7 @@ function Game() {
   });
 
   const startTimeRef = useRef(0);
+  let gameWon = false;
 
   // Use Effect Functions
 
@@ -75,7 +75,7 @@ function Game() {
     setSettings(settingsData);
     setElapsed(0);
     startTimeRef.current = 0;
-    setIsWon(false);
+    gameWon = false;
   }
 
   // Toggle Function to Start and End the Game
@@ -106,15 +106,32 @@ function Game() {
     });
   }
 
-  // Function to Toggle Win
-  function toggleWin(boolean) {
-    setIsWon(boolean);
-    startEndAndResetGame("end");
+  // If Statement to check If the Game Has Won
+  if (started === 1) {
+    let diceValue = 0; // Variable to Compare
+
+    const isWon = settings.diceArray.every((dice) => {
+      if (dice.isFrozen === false) return false;
+
+      // Changing the Dice Value if its still zero
+      if (diceValue === 0) {
+        diceValue = dice.value;
+      }
+      console.log("Check Won", dice.value === diceValue);
+
+      return dice.value === diceValue; // Comparing the Dice Values
+    });
+    if (isWon) {
+      startEndAndResetGame("end");
+      gameWon = true;
+    }
   }
+
+  console.log("...Renderd");
 
   return (
     <main>
-      {isWon ? (
+      {gameWon ? (
         <Confetti width={windowSize.width} height={windowSize.height} />
       ) : undefined}
       <GameSettings
@@ -128,7 +145,6 @@ function Game() {
         settings={settings}
         isStarted={started}
         playGame={playGame}
-        setIsWon={toggleWin}
         rolls={rolls}
         time={elapsed}
         setRolls={setRolls}
