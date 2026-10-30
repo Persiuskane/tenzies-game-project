@@ -94,4 +94,6 @@ main {
   border-color: var(--accent-border);
   font-family: var(--mono);
   font-size: 1.5rem;
+  box-shadow: var(--shadow);
+  cursor: pointer;
 }
