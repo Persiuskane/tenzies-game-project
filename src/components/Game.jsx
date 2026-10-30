@@ -126,8 +126,8 @@ function Game() {
       gameWon = true;
     }
   }
-
-  console.log("...Renderd");
+  // After reseting the game that render will change the gameWon vaiable back to false.
+  // we can make a state variable but will that defeat the no state problem???
 
   return (
     <main>
